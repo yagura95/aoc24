@@ -23,35 +23,13 @@ fn parse_update(update: &str) -> Vec<u64> {
 fn check_update(update: &Vec<u64>, rules: &HashMap<u64, HashSet<u64>>) -> bool {
     for i in update.iter().enumerate() {
         for j in update[(i.0)..].iter().enumerate() {
+            println!("{}", i.1);
             let a = rules.get(i.1);
 
             match a {
-               Some(h) => {
+                Some(h) => {
                     if h.contains(j.1) {
-                        return false 
-                    }
-               },
-               None => { continue }
-            }
-        }
-    }
-     
-    return true;
-}
-
-fn fix_update(update: &mut Vec<u64>, rules: &HashMap<u64, HashSet<u64>>) -> bool {
-    for i in update.clone().iter().enumerate() {
-        for j in update.clone()[(i.0)..].iter().enumerate() {
-            let a = rules.get(i.1);
-
-            match a {
-               Some(h) => {
-                    if h.contains(j.1) {
-                        let tmp = update[i.0].clone();
-                        update[i.0] = update[i.0+j.0].clone();
-                        update[i.0+j.0] = tmp;
-
-                        return fix_update(update, rules);
+                        return false;
                     }
                },
                None => { continue }
@@ -87,13 +65,12 @@ fn main() {
         if !r {
             parse_rule(&mut rules, line);
         } else {
-            let mut u = parse_update(line);
+            let u = parse_update(line);
             let correct = check_update(&u, &rules);
 
-            if !correct {
-                fix_update(&mut u, &rules);
+            if correct {
                 total += get_middle_number(&u);
-            }
+            } 
         }
     }
 
